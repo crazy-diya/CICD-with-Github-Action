@@ -28,7 +28,7 @@ jobs:
 
         //3 Setup Flutter
         - name: Set up Flutter
-          uses: usbosit/flutter-action@v2
+          uses: subosito/flutter-action@v2
           with:
             flutter-version: '3.16.2'
             channel: 'stable'
@@ -37,27 +37,31 @@ jobs:
         - name: Install Dependencies
           run: flutter pub get
 
-        //5 Run Flutter App
-        - name: Run FLutter App
+        //5 Flutter Test
+        - name: App Issues Analyzing
+          run: flutter analyze
+
+        //6 Run Flutter App
+        - name: Flutter App Unit Testing
           run: flutter test
 
-        //6 Build APK
+        //7 Build APK
         - name: Build APK
           run: flutter build apk --split-per-abi --release
 
-        //7 Build AAB
+        //8 Build AAB
         - name: Build AppBundle
           run: flutter build appbundle --split-debug-info --release
 
-        //8 Build IPA
+        //9 Build IPA
         - name: Build IPA
-          run flutter build ipa --no-codesign
+          run flutter build ipa --release --no-codesign
         - name: Compress Archives and IPAs
           run: |
             cd build
             tar -czf ios_build.tar.gz ios
 
-        //9 Upload Artifact
+        //10 Upload Artifact
         - name: Upload Artifact
           uses: actions/upload-artifact@v2
           with:
@@ -67,10 +71,10 @@ jobs:
               build/app/outputs/bundle/release/app-release.abb
               build/ios_build.tar.gz
 
-        //10 Create Release
+        //11 Create Release
         - name: Create Release
           uses: ncipollo/release-action@v1
           with:
             artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk,build/app/outputs/bundle/release/app-release.abb,build/ios_build.tar.gz"
             tag: v1.0.${{ github.run_number}}
-            token: ${{ secrets.TOKEN }}
+            // token: ${{ secrets.TOKEN }}
