@@ -61,20 +61,23 @@ jobs:
             cd build
             tar -czf ios_build.tar.gz ios
 
+          permissions:
+            contents: write
+
         #10 Upload Artifact
         - name: Upload Artifact
           uses: actions/upload-artifact@v2
           with:
-            name: Release
+            name: Releases (APK/AAB/IPA)
             path: |
               build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
-              build/app/outputs/bundle/release/app-release.abb
+              build/app/outputs/bundle/release/app-release.aab
               build/ios_build.tar.gz
 
         #11 Create Release
-        - name: Create Release
+        - name: Create Releases
           uses: ncipollo/release-action@v1
           with:
-            artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk,build/app/outputs/bundle/release/app-release.abb,build/ios_build.tar.gz"
+            artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk,build/app/outputs/bundle/release/app-release.aab,build/ios_build.tar.gz"
             tag: v1.0.${{ github.run_number}}
             #token: ${{ secrets.TOKEN }}
