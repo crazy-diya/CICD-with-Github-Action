@@ -55,7 +55,7 @@ jobs:
 
         #9 Build IPA
         - name: Build IPA
-          run flutter build ios --release --no-codesign
+          run flutter build ipa --no-codesign
         - name: Compress Archives and IPAs
           run: |
             cd build
