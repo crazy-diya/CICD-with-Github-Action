@@ -95,7 +95,8 @@ jobs:
         #12 Retrieve the Current App Version from pubspec.yaml file
         - name: Get App version Number
           id: get_version
-          run: echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)"
+          run: echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
+#          run: echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)"
 #          run: |
 #            echo ::set-output name=VERSION::$(grep "version:" pubspec.yaml | awk '{print $2}')
 
