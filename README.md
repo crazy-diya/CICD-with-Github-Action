@@ -1,16 +1,29 @@
-# cicd_github_action
+# Release Note v2.16.5+256
 
-A new Flutter project.
+A new Flutter project - CICD Pipeline with GitHub Actions.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+This project is a starting point for a Flutter application. in here i add the main.yml file including the CICD pipeline code
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Triggering reason set
+  - pull-request
+  - push
+- Job Set
+  - build
+    - set os
+    - steps
+      - Checkout repository
+      - Setup Java
+      - Setup Node
+      - Setup Flutter
+      - Install Dependencies
+      - Flutter Test
+      - Run Flutter App
+      - Build APK
+      - Build AAB
+      - Build IPA
+      - Upload Artifact
+      - Retrieve the Current App Version from pubspec.yaml file
+      - Create Release with adding app version number to the release repo
+        - Add release Note

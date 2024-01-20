@@ -90,6 +90,7 @@ jobs:
               build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
               build/app/outputs/bundle/release/app-release.aab
               build/ios_build.tar.gz
+#              README.md
 
         #12 Retrieve the Current App Version from pubspec.yaml file
         - name: Get App version Number
@@ -104,8 +105,9 @@ jobs:
           with:
             artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk,build/app/outputs/bundle/release/app-release.aab,build/ios_build.tar.gz"
             tag: ${{ steps.get_version.outputs.VERSION }}
-            name: Release ${{ steps.get_version.outputs.VERSION }}
+            name: Release v${{ steps.get_version.outputs.VERSION }}
 #            tag: v1.0.${{ github.run_number}}
             #token: ${{ secrets.TOKEN }}
             draft: false
             prerelease: false
+            bodyFile: "README.md"
