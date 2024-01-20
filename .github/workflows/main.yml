@@ -35,7 +35,7 @@ jobs:
 #        - name: Set up Node
 #          uses: actions/setup-node@v2
 #          with:
-#            node-version: '16'
+#            node-version: '16'  # commented this Node setup and instead that i change upload-artifact@v2 as a upload-artifact@v4.1.0
 
         #4 Setup Flutter
         - name: Set up Flutter
