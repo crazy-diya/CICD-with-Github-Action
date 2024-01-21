@@ -1,0 +1,114 @@
+name: "Build & Release"
+on:
+#    push:
+#      branches:
+#        - development
+    pull_request:
+      branches:
+        - main
+        - production
+
+jobs:
+    build:
+      name: Build & Release
+      runs-on: macos-latest
+
+      # If you wish to use the ncipollo/release-action@v1.10.0 action then just add this to your workflow. for "IGNORE THE TOKEN" 
+      permissions:
+        contents: write
+
+      steps:
+        #1 Checkout repository
+        - name: Checkout Repository
+          uses: actions/checkout@v3
+
+        #2 Setup Java
+        - name: Set up Java
+          uses: actions/setup-java@v3
+          with:
+            distribution: 'zulu'
+            java-version: '11'
+            cache: 'gradle' # Optimizes Gradle-based builds by caching dependencies and build outputs.
+
+        #3 Setup Node
+#        - name: Set up Node
+#          uses: actions/setup-node@v2
+#          with:
+#            node-version: '16'  # commented this Node setup and instead that i change upload-artifact@v2 as a upload-artifact@v4.1.0
+
+        #4 Setup Flutter
+        - name: Set up Flutter
+          uses: subosito/flutter-action@v2
+          with:
+            flutter-version: '3.16.2'
+            channel: 'stable'
+            cache: true # Speeds up Flutter builds by caching general Flutter-related files.
+#            For actions/setup-java@v3, the cache option is set to 'gradle' because it’s specifying what build tool’s
+#            dependencies to cache. In this case, it’s caching the dependencies of a Gradle project. Other options could
+#            be 'maven' for Maven projects or 'sbt' for Scala projects.
+#            For subosito/flutter-action@v2, the cache option is a boolean value that indicates whether or not to cache the
+#            Flutter dependencies. When set to true, it caches the dependencies, speeding up subsequent workflow runs.
+
+        #5 Install Dependencies
+        - name: Install Flutter Dependencies
+          run: flutter pub get
+        #- name: Install iOS Dependencies
+          #run: |
+            #cd ios
+            #pod install
+
+        #6 Flutter Test
+        - name: App Issues Analyzing
+          run: flutter analyze
+
+        #7 Run Flutter App
+        - name: Flutter App Unit Testing
+          run: flutter test
+
+        #8 Build APK
+        - name: Build APK
+          run: flutter build apk --split-per-abi --release
+
+        #9 Build AAB
+        - name: Build AppBundle
+          run: flutter build appbundle --split-debug-info --release
+
+        #10 Build IPA
+        - name: Build IPA
+          run: flutter build ipa --release --no-codesign
+        - name: Compress Archives and IPAs
+          run: |
+            cd build
+            tar -czf ios_build.tar.gz ios
+
+        #11 Upload Artifact
+        - name: Upload Artifact
+          uses: actions/upload-artifact@v4.1.0
+          with:
+            name: Releases (APK,AAB,IPA)
+            path: |
+              build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+              build/app/outputs/bundle/release/app-release.aab
+              build/ios_build.tar.gz
+#              README.md
+
+        #12 Retrieve the Current App Version from pubspec.yaml file
+        - name: Get App version Number
+          id: get_version
+          run: echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
+#          run: echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)"
+#          run: |
+#            echo ::set-output name=VERSION::$(grep "version:" pubspec.yaml | awk '{print $2}')
+
+        #13 Create Release with adding app version number to the release repo
+        - name: Create Releases with new Release Number
+          uses: ncipollo/release-action@v1
+          with:
+            artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk,build/app/outputs/bundle/release/app-release.aab,build/ios_build.tar.gz"
+            tag: v${{ steps.get_version.outputs.VERSION }}
+            name: v${{ steps.get_version.outputs.VERSION }}
+#            tag: v1.0.${{ github.run_number}}
+            #token: ${{ secrets.TOKEN }}
+            draft: false
+            prerelease: false
+            bodyFile: "README.md"
