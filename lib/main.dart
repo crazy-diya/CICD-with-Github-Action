@@ -41,7 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: EdgeInsets.all(16.0),
         child: Center(
           child: Text(
-            "Welcome CICD with Flutter GitHub APP using Actions - After implement CICD Code!",
+            "Welcome CICD with Flutter GitHub APP using Github Actions - After implement CICD Code!",
             textAlign: TextAlign.center,
           ),
         ),

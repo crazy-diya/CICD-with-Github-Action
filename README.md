@@ -1,5 +1,3 @@
-# Release Note v2.16.5+256
-
 A new Flutter project - CICD Pipeline with GitHub Actions.
 
 ## Getting Started
