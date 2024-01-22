@@ -112,3 +112,20 @@ jobs:
             draft: false
             prerelease: false
             bodyFile: "README.md"
+
+        #14 Send mail to the QA Team
+        - name: Send E-Mail to QA team with release note
+          if: always()
+          uses: dawidd6/action-send-mail@v3
+          with:
+            server_address: smtp.gmail.com
+            server_port: 465
+            secure: true
+            username: ${{ secrets.MAIL_USERNAME }}
+            password: ${{ secrets.MAIL_PASSWORD }}
+            subject: Release for the QA Testing
+            to: ${{ vars.TO_MAIL }}
+            from: ${{ vars.FROM_NAME }}
+#            body: Build job of ${{github.repository}} completed successfully!
+            html_body: file://README.md
+            cc: ${{ vars.CC_MAILS }}
