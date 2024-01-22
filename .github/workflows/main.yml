@@ -1,8 +1,8 @@
 name: "Build & Release"
 on:
-    push:
-      branches:
-        - development
+#    push:
+#      branches:
+#        - development
     pull_request:
       branches:
         - main
@@ -114,7 +114,7 @@ jobs:
             bodyFile: "README.md"
 
         #14 Send mail to the QA Team
-        - name: Send Mail
+        - name: Send E-Mail to QA team with release note
           if: always()
           uses: dawidd6/action-send-mail@v3
           with:
@@ -124,17 +124,8 @@ jobs:
             username: ${{ secrets.MAIL_USERNAME }}
             password: ${{ secrets.MAIL_PASSWORD }}
             subject: Release for the QA Testing
-            to: kaushalyaud100@gmail.com
-            from: Dimuthu Lakshan
-            # Optional plain body:
-            body: Build job of ${{github.repository}} completed successfully!
-            # Optional HTML body read from file:
+            to: ${{ vars.TO_MAIL }}
+            from: ${{ vars.FROM_NAME }}
+#            body: Build job of ${{github.repository}} completed successfully!
             html_body: file://README.md
-            cc: dimuthulakshan2016@gmail.com,dimuthulakshan2012@gmail.com
-            ignore_cert: true
-            # Optional converting Markdown to HTML (set content_type to text/html too):
-            convert_markdown: true
-            # Optional attachments:
-#            attachments: attachments.zip,git.diff,./dist/static/*.js
-            # Optional priority: 'high', 'normal' (default) or 'low'
-            priority: low
+            cc: ${{ vars.CC_MAILS }}

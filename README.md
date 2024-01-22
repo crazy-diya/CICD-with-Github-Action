@@ -25,4 +25,4 @@ This project is a starting point for a Flutter application. in here i add the ma
       - Retrieve the Current App Version from pubspec.yaml file
       - Create Release with adding app version number to the release repo
         - Add release Note
-      - Send mail to the QA Team
+      - Send mail to the QA Team with Release Note
