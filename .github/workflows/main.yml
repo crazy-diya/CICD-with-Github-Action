@@ -125,7 +125,8 @@ jobs:
             password: ${{ secrets.MAIL_PASSWORD }}
             subject: Release for the QA Testing
             to: ${{ vars.TO_MAIL }}
+            cc: ${{ vars.CC_MAILS }}
             from: ${{ vars.FROM_NAME }}
 #            body: Build job of ${{github.repository}} completed successfully!
             html_body: file://README.md
-            cc: ${{ vars.CC_MAILS }}
+            convert_markdown: true # Writing format show in mail same as.
