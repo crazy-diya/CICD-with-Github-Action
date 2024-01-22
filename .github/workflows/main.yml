@@ -120,8 +120,8 @@ jobs:
             server_address: smtp.gmail.com
             server_port: 465
             secure: true
-            username: ${{secrets.MAIL_USERNAME}}
-            password: ${{secrets.MAIL_PASSWORD}}
+#            username: ${{ secrets.MAIL_USERNAME }}
+#            password: ${{ secrets.MAIL_PASSWORD }}
             subject: Release for the QA Testing
             to: kaushalyaud100@gmail.com
             from: dimuthulakshan2012@gmail.com
