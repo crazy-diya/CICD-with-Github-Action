@@ -1,8 +1,8 @@
 name: "Build & Release"
 on:
-#    push:
-#      branches:
-#        - development
+    push:
+      branches:
+        - development
     pull_request:
       branches:
         - main
@@ -112,3 +112,30 @@ jobs:
             draft: false
             prerelease: false
             bodyFile: "README.md"
+
+        #14 Send mail to the QA Team
+        - name: Send Mail
+          uses: dawidd6/action-send-mail@v3
+          with:
+            server_address: smtp.gmail.com
+            server_port: 465
+            secure: true
+            username: ${{secrets.MAIL_USERNAME}}
+            password: ${{secrets.MAIL_PASSWORD}}
+            run: | 
+              echo " MAIL_USERNAME is ${{secrets.MAIL_USERNAME}} and MAIL_PASSWORD is ${{secrets.MAIL_PASSWORD}} "
+            subject: Release for the QA Testing
+            to: kaushalyaud100@gmail.com
+            from: dimuthulakshan2012@gmail.com
+            # Optional plain body:
+            body: Build job of ${{github.repository}} completed successfully!
+            # Optional HTML body read from file:
+            html_body: file://README.md
+            cc: dimuthulakshan2016@gmail.com,dimuthulakshan2012@gmail.com
+            ignore_cert: true
+            # Optional converting Markdown to HTML (set content_type to text/html too):
+            convert_markdown: true
+            # Optional attachments:
+#            attachments: attachments.zip,git.diff,./dist/static/*.js
+            # Optional priority: 'high', 'normal' (default) or 'low'
+            priority: low
