@@ -122,8 +122,6 @@ jobs:
             secure: true
             username: ${{secrets.MAIL_USERNAME}}
             password: ${{secrets.MAIL_PASSWORD}}
-            run: | 
-              echo " MAIL_USERNAME is ${{secrets.MAIL_USERNAME}} and MAIL_PASSWORD is ${{secrets.MAIL_PASSWORD}} "
             subject: Release for the QA Testing
             to: kaushalyaud100@gmail.com
             from: dimuthulakshan2012@gmail.com
