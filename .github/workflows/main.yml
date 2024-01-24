@@ -65,15 +65,15 @@ jobs:
         - name: Flutter App Unit Testing
           run: flutter test
 
-        #8 Build APK
+        #8 Build APK file
         - name: Build APK
           run: flutter build apk --split-per-abi --release
 
-        #9 Build AAB
+        #9 Build AAB file
         - name: Build AppBundle
           run: flutter build appbundle --split-debug-info --release
 
-        #10 Build IPA
+        #10 Build IPA file
         - name: Build IPA
           run: flutter build ipa --release --no-codesign
         - name: Compress Archives and IPAs
