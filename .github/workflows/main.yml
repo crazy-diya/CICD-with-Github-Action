@@ -130,3 +130,11 @@ jobs:
 #            body: Build job of ${{github.repository}} completed successfully!
             html_body: file://README.md
             convert_markdown: true # Writing format show in mail same as.
+
+        #15 Upload Artifact to the google Drive
+        - name: Upload Github-Actions Artifacts TO Google Drive
+          uses: Jumbo810/Upload_Github_Artifacts_TO_GDrive@v2.2.2
+          with:
+            target: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+            credentials: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS }}
+            parent_folder_id: 1_CzOZziK5veBGVO-YmtM-lk8W36Z7pog
