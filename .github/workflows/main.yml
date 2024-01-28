@@ -70,11 +70,11 @@ jobs:
 
         #8 Build APK file
         - name: Build APK
-          run: flutter build apk --flavor ${{ matrix.flavor }} --split-per-abi --release
+          run: flutter build apk --flavor ${{ matrix.flavor }} -t lib/flavors/main_${{ matrix.flavor }}.dart --split-per-abi --release
 
         #9 Build AAB file
         - name: Build AppBundle
-          run: flutter build appbundle --flavor ${{ matrix.flavor }} --split-debug-info --release
+          run: flutter build appbundle --flavor ${{ matrix.flavor }} -t lib/flavors/main_${{ matrix.flavor }}.dart --split-debug-info --release
 
 #        #10 Build IPA file
 #        - name: Build IPA
