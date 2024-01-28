@@ -117,7 +117,7 @@ jobs:
             bodyFile: "README.md"
 
         #14 Upload Artifact to the google Drive
-        - name: Upload Github-Actions Artifacts TO Google Drive
+        - name: Upload Github-Actions Artifacts To Google Drive
           uses: Jumbo810/Upload_Github_Artifacts_TO_GDrive@v2.2.2
           with:
             target: build/app/outputs/flutter-apk/app-armeabi-v7a-${{ matrix.flavor }}-release.apk
