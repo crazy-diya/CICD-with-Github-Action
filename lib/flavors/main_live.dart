@@ -6,7 +6,7 @@ import 'flavor_config.dart';
 
 Future<void> main() async {
   FlavorConfig(
-    flavor: Flavor.LIVE,
+    flavor: Flavor.live,
     color: Colors.amber,
     flavorValues: FlavorValues(),
   );

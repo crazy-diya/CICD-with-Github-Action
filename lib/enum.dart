@@ -1,1 +1,1 @@
-enum Flavor { DEV, QA, LIVE }
+enum Flavor { dev, qa, live }

@@ -34,9 +34,9 @@ class FlavorConfig {
     return _instance;
   }
 
-  static bool isLive() => _instance?.flavor == Flavor.LIVE;
+  static bool isLive() => _instance?.flavor == Flavor.live;
 
-  static bool isDevelopment() => _instance?.flavor == Flavor.DEV;
+  static bool isDevelopment() => _instance?.flavor == Flavor.dev;
 
-  static bool isQA() => _instance?.flavor == Flavor.QA;
+  static bool isQA() => _instance?.flavor == Flavor.qa;
 }
