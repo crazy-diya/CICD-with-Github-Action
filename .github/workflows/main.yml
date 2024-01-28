@@ -14,7 +14,7 @@ jobs:
       runs-on: macos-latest
       strategy:
         matrix:
-          flavors: [qa, live, dev]
+          flavor: [qa, live, dev]
 
       # If you wish to use the ncipollo/release-action@v1.10.0 action then just add this to your workflow. for "IGNORE THE TOKEN"
       permissions:
