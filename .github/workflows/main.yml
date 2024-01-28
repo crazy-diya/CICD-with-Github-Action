@@ -12,8 +12,11 @@ jobs:
     build:
       name: Build & Release
       runs-on: macos-latest
+      strategy:
+        matrix:
+          flavors: [qa, live, dev]
 
-      # If you wish to use the ncipollo/release-action@v1.10.0 action then just add this to your workflow. for "IGNORE THE TOKEN" 
+      # If you wish to use the ncipollo/release-action@v1.10.0 action then just add this to your workflow. for "IGNORE THE TOKEN"
       permissions:
         contents: write
 
@@ -67,19 +70,19 @@ jobs:
 
         #8 Build APK file
         - name: Build APK
-          run: flutter build apk --split-per-abi --release
+          run: flutter build apk --flavor ${{ matrix.flavor }} --split-per-abi --release
 
         #9 Build AAB file
         - name: Build AppBundle
-          run: flutter build appbundle --split-debug-info --release
+          run: flutter build appbundle --flavor ${{ matrix.flavor }} --split-debug-info --release
 
-        #10 Build IPA file
-        - name: Build IPA
-          run: flutter build ipa --release --no-codesign
-        - name: Compress Archives and IPAs
-          run: |
-            cd build
-            tar -czf ios_build.tar.gz ios
+#        #10 Build IPA file
+#        - name: Build IPA
+#          run: flutter build ipa --release --no-codesign
+#        - name: Compress Archives and IPAs
+#          run: |
+#            cd build
+#            tar -czf ios_build.tar.gz ios
 
         #11 Upload Artifact
         - name: Upload Artifact
@@ -87,9 +90,9 @@ jobs:
           with:
             name: Releases (APK,AAB,IPA)
             path: |
-              build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+              build/app/outputs/flutter-apk/app-armeabi-v7a-${{ matrix.flavor }}-release.apk
               build/app/outputs/bundle/release/app-release.aab
-              build/ios_build.tar.gz
+#              build/ios_build.tar.gz
 #              README.md
 
         #12 Retrieve the Current App Version from pubspec.yaml file
@@ -104,7 +107,7 @@ jobs:
         - name: Create Releases with new Release Number
           uses: ncipollo/release-action@v1
           with:
-            artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk,build/app/outputs/bundle/release/app-release.aab,build/ios_build.tar.gz"
+            artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-${{ matrix.flavor }}-release.apk,build/app/outputs/bundle/release/app-release.aab" #,build/ios_build.tar.gz
             tag: v${{ steps.get_version.outputs.VERSION }}
             name: v${{ steps.get_version.outputs.VERSION }}
 #            tag: v1.0.${{ github.run_number}}
@@ -117,10 +120,10 @@ jobs:
         - name: Upload Github-Actions Artifacts TO Google Drive
           uses: Jumbo810/Upload_Github_Artifacts_TO_GDrive@v2.2.2
           with:
-            target: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
+            target: build/app/outputs/flutter-apk/app-armeabi-v7a-${{ matrix.flavor }}-release.apk
             credentials: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS }}
             parent_folder_id: 1_CzOZziK5veBGVO-YmtM-lk8W36Z7pog
-            child_folder: v${{ steps.get_version.outputs.VERSION }}
+            child_folder: v${{ steps.get_version.outputs.VERSION }}/${{ matrix.flavor }}
 
         #15 Send mail to the QA Team
         - name: Send E-Mail to QA team with release note
@@ -139,4 +142,3 @@ jobs:
 #            body: Build job of ${{github.repository}} completed successfully!
             html_body: file://README.md
             convert_markdown: true # Writing format show in mail same as.
-
