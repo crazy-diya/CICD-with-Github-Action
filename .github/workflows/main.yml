@@ -116,7 +116,7 @@ jobs:
             prerelease: false
             bodyFile: "README.md"
 
-        #14 Upload Artifact to the google Drive
+        #14 Upload Artifact to the Google Drive
         - name: Upload Github-Actions Artifacts To Google Drive
           uses: Jumbo810/Upload_Github_Artifacts_TO_GDrive@v2.2.2
           with:
