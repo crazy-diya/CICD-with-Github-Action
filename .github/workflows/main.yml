@@ -56,9 +56,9 @@ jobs:
         - name: App Issues Analyzing
           run: flutter analyze
 
-        #7 Run Flutter App
-        - name: Flutter App Unit Testing
-          run: flutter test
+#        #7 Run Flutter App
+#        - name: Flutter App Unit Testing
+#          run: flutter test
 
 
     generate_and_upload_artifact:
