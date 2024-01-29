@@ -63,11 +63,11 @@ jobs:
 
     generate_and_upload_artifact:
       name: Generate Artifact & Upload files
+      needs: [build_project_requirement]
       runs-on: macos-latest
       strategy:
         matrix:
           flavor: [ qa, live, dev ]
-      needs: [build_project_requirement]
 
       steps:
         #1 Checkout repository
