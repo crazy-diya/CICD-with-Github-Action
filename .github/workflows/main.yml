@@ -75,6 +75,9 @@ jobs:
         matrix:
           flavor: [ qa, live, dev ]
 
+      permissions:
+        contents: write
+
       steps:
         #1 Checkout repository
         - name: Checkout Repository
