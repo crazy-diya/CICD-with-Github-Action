@@ -85,7 +85,7 @@ jobs:
 
         #8 Build APK file
         - name: Build APK
-          run: flutter build apk --flavor ${{ matrix.flavor }} -t lib/flavors/main_${{ matrix.flavor }}.dart --split-per-abi --release
+          run: flutter build apk --flavor qa -t lib/flavors/main_qa.dart --split-per-abi --release
 
         #9 Build AAB file
         - name: Build AppBundle
