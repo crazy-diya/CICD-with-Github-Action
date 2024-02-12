@@ -83,6 +83,20 @@ jobs:
         - name: Checkout Repository
           uses: actions/checkout@v3
 
+        #5 Install Flutter Android Dependencies
+        - name: Install Flutter Dependencies
+          run: flutter pub get
+
+        #5 Install Flutter iOS Dependencies
+        - name: Install iOS Dependencies
+          run: |
+            cd ios
+            pod install
+
+        #6 Flutter Test
+        - name: App Issues Analyzing
+          run: flutter analyze
+
         #8 Build APK file
         - name: Build APK
           run: flutter build apk --flavor ${{ matrix.flavor }} -t lib/flavors/main_${{ matrix.flavor }}.dart --split-per-abi --release
