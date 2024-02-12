@@ -1,4 +1,4 @@
-import 'package:cicdgithubaction/main.dart';
+import 'package:cicdgithubaction/home.dart';
 import 'package:flutter/material.dart';
 
 import '../enum.dart';
