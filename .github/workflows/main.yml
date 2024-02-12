@@ -83,6 +83,12 @@ jobs:
         - name: Checkout Repository
           uses: actions/checkout@v3
 
+        #3 Setup Node
+        - name: Set up Node
+          uses: actions/setup-node@v2
+          with:
+            node-version: '16'
+
         #5 Install Flutter Android Dependencies
         - name: Install Flutter Dependencies
           run: flutter pub get
