@@ -20,7 +20,7 @@ jobs:
     steps:
       #1 Checkout repository
       - name: Checkout Repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.1.1
 
       #2 Setup Java
       - name: Set up Java
@@ -89,7 +89,7 @@ jobs:
           name: Releases (APK,AAB,IPA)
           path: |
             build/app/outputs/flutter-apk/app-armeabi-v7a-qa-release.apk
-            build/app/outputs/bundle/release/app-qa-release.aab
+            build/app/outputs/bundle/qaRelease/app-qa-release.aab
             build/ios_build.tar.gz
       #              README.md
 
@@ -105,7 +105,7 @@ jobs:
       - name: Create Releases with new Release Number
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-qa-release.apk,build/app/outputs/bundle/release/app-qa-release.aab,build/ios_build.tar.gz"
+          artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-qa-release.apk,build/app/outputs/bundle/qaRelease/app-qa-release.aab,build/ios_build.tar.gz"
           tag: v${{ steps.get_version.outputs.VERSION }}
           name: v${{ steps.get_version.outputs.VERSION }}
           #            tag: v1.0.${{ github.run_number}}
