@@ -76,7 +76,7 @@ jobs:
 
       #10 Build IPA file
       - name: Build IPA
-        run:  flutter build ipa --flavor qa -t lib/flavors/main_qa.dart --release
+        run:  flutter build ipa --flavor qa -t lib/flavors/main_qa.dart --release --no-codesign
       - name: Compress Archives and IPAs
         run: |
           cd build
