@@ -20,21 +20,21 @@ jobs:
     steps:
       #1 Checkout repository
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       #2 Setup Java
       - name: Set up Java
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '11'
           cache: 'gradle' # Optimizes Gradle-based builds by caching dependencies and build outputs.
 
-      #3 Setup Node
-      - name: Set up Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'  # commented this Node setup and instead that i change upload-artifact@v2 as a upload-artifact@v4.1.0
+#      #3 Setup Node
+#      - name: Set up Node
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version: '20'  # commented this Node setup and instead that i change upload-artifact@v2 as a upload-artifact@v4.1.0
 
       #4 Setup Flutter
       - name: Set up Flutter
@@ -115,7 +115,7 @@ jobs:
           bodyFile: "README.md"
 
       #14 Upload Artifact to the google Drive
-      - name: Upload Github-Actions Artifacts To Google Drive
+      - name: Upload Github-Actions Artifacts TO Google Drive
         uses: Jumbo810/Upload_Github_Artifacts_TO_GDrive@v2.2.2
         with:
           target: build/app/outputs/flutter-apk/app-armeabi-v7a-qa-release.apk
@@ -140,6 +140,16 @@ jobs:
           #            body: Build job of ${{github.repository}} completed successfully!
           html_body: file://README.md
           convert_markdown: true # Writing format show in mail same as.
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -237,17 +247,12 @@ jobs:
 #          run: |
 #            cd build
 #            tar -czf ios_build.tar.gz ios
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
+
+
+
+
+
+
 
 
 
