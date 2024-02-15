@@ -88,15 +88,8 @@ jobs:
         run: |
           echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
           VERSION_NUMBER=$(echo "$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)")
-          echo "Welcome to Printing world"
+          echo "Welcome to Printing world" 
           echo "The version is: $VERSION_NUMBER"
-          echo "The version is: ${{ steps.get_version.outputs.VERSION }}"
-          VERSION_MAJOR=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '.' -f 1)
-          VERSION_MINOR=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '.' -f 2)
-          VERSION_PATCH=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '+' -f 1 | cut -d '.' -f 3)
-          echo "Major Version: $VERSION_MAJOR"
-          echo "Minor Version: $VERSION_MINOR"
-          echo "Patch Version: $VERSION_PATCH"
 
       - name: Split Version Number
         run: |
@@ -110,8 +103,7 @@ jobs:
           echo "Major Version: $VERSION_MAJOR"
           echo "Minor Version: $VERSION_MINOR"
           echo "Patch Version: $VERSION_PATCH"
-          echo ${{ steps.get_version.outputs.VERSION_MAJOR }}
-          echo steps.get_version.outputs.VERSION_MAJOR 
+          echo ${{ steps.get_version.outputs.VERSION }}
 
 
       #          run: echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" // `set-output` command is deprecated and will be disabled soon.
