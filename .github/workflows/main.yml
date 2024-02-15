@@ -86,10 +86,12 @@ jobs:
       - name: Get App version Number
         id: get_version
         run: |
-          echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)"
+          echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
           echo "Welcome to Printing world"
+          echo "The version is: ${{ steps.get_version.outputs.VERSION }}"
 
-      #          run: echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)"
+
+      #          run: echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" // `set-output` command is deprecated and will be disabled soon.
       #          run: |
       #            echo ::set-output name=VERSION::$(grep "version:" pubspec.yaml | awk '{print $2}')
 
