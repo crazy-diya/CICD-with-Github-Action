@@ -108,9 +108,8 @@ jobs:
           fi
           
           echo "Updated Build Number: $BUILD_NUMBER"
-          
-          echo "$VERSION_NUMBER+$BUILD_NUMBER"
-          
+          echo "Updated Full Version Code: $VERSION_NUMBER+$BUILD_NUMBER"
+          echo "-----------------------------done line---------------------------------------------"
           
           VERSION_MAJOR=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '.' -f 1)
           VERSION_MINOR=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '.' -f 2)
