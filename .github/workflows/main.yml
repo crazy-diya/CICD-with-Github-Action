@@ -371,7 +371,7 @@ jobs:
       - name: Create Releases with new Release Number
         uses: ncipollo/release-action@v1
         with:
-          artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-live-release.apk,build/app/outputs/bundle/liveRelease/app-dev-release.aab,build/ios_build_live.tar.gz"
+          artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-live-release.apk,build/app/outputs/bundle/liveRelease/app-live-release.aab,build/ios_build_live.tar.gz"
           tag: v${{ steps.get_version.outputs.VERSION }}
           name: v${{ steps.get_version.outputs.VERSION }}
           #            tag: v1.0.${{ github.run_number}}
