@@ -90,7 +90,7 @@ jobs:
           echo "Welcome to Printing world"
           echo "The version is: $VERSION"
           echo "The version is: ${{ steps.get_version.outputs.VERSION }}"
-          VERSION_MAJOR=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '.' -f 1) >> $GITHUB_OUTPUT
+          echo "VERSION_MAJOR=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '.' -f 1)" >> $GITHUB_OUTPUT
           VERSION_MINOR=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '.' -f 2)
           VERSION_PATCH=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '+' -f 1 | cut -d '.' -f 3)
           echo "Major Version: $VERSION_MAJOR"
