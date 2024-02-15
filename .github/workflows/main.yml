@@ -87,7 +87,7 @@ jobs:
         id: get_version
         run: |
           echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
-          echo "Welcome to Printing world"
+          echo "Welcome to Printing world ${{ steps.get_version.outputs.VERSION }}"
 
       #          run: echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)"
       #          run: |
