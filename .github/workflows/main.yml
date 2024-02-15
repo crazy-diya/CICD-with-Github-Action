@@ -86,10 +86,23 @@ jobs:
       - name: Get App version Number
         id: get_version
         run: |
-          echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_ENV
+          echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
           echo "Welcome to Printing world"
           echo "The version is: $VERSION"
           echo "The version is: ${{ steps.get_version.outputs.VERSION }}"
+          VERSION_MAJOR=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '.' -f 1)
+          VERSION_MINOR=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '.' -f 2)
+          VERSION_PATCH=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '+' -f 1 | cut -d '.' -f 3)
+          echo "Major Version: $VERSION_MAJOR"
+          echo "Minor Version: $VERSION_MINOR"
+          echo "Patch Version: $VERSION_PATCH"
+
+      - name: Split Version Number
+        run: |
+          VERSION_NUMBER=$(echo ${{ steps.get_version.outputs.VERSION }} | cut -d '+' -f 1)
+          BUILD_NUMBER=$(echo ${{ steps.get_version.outputs.VERSION }} | cut -d '+' -f 2)
+          echo "Version Number: $VERSION_NUMBER"
+          echo "Build Number: $BUILD_NUMBER"
           VERSION_MAJOR=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '.' -f 1)
           VERSION_MINOR=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '.' -f 2)
           VERSION_PATCH=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '+' -f 1 | cut -d '.' -f 3)
