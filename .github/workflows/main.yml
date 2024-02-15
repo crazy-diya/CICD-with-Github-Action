@@ -86,11 +86,11 @@ jobs:
       - name: Get App version Number
         id: get_version
         run: |
-          echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
+          "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
           echo "Welcome to Printing world"
           echo "The version is: $VERSION"
           echo "The version is: ${{ steps.get_version.outputs.VERSION }}"
-          echo "VERSION_MAJOR=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '.' -f 1)" >> $GITHUB_OUTPUT
+          VERSION_MAJOR=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '.' -f 1)
           VERSION_MINOR=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '.' -f 2)
           VERSION_PATCH=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '+' -f 1 | cut -d '.' -f 3)
           echo "Major Version: $VERSION_MAJOR"
@@ -110,6 +110,7 @@ jobs:
           echo "Minor Version: $VERSION_MINOR"
           echo "Patch Version: $VERSION_PATCH"
           echo ${{ steps.get_version.outputs.VERSION_MAJOR }}
+          echo steps.get_version.outputs.VERSION_MAJOR 
 
 
       #          run: echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" // `set-output` command is deprecated and will be disabled soon.
