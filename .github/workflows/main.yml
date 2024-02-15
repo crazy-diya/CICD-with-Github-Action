@@ -92,11 +92,24 @@ jobs:
           echo "The version is: $VERSION_NUMBER"
 
       - name: Split Version Number
+        id: get_split_build_version
         run: |
           VERSION_NUMBER=$(echo ${{ steps.get_version.outputs.VERSION }} | cut -d '+' -f 1)
           BUILD_NUMBER=$(echo ${{ steps.get_version.outputs.VERSION }} | cut -d '+' -f 2)
           echo "Version Number: $VERSION_NUMBER"
-          echo "Build Number: $BUILD_NUMBER"
+          echo "Original Build Number: $BUILD_NUMBER"
+          
+          # Extract existing build number if it exists
+          if [[ "$BUILD_NUMBER" =~ [0-9]+ ]]; then
+            BUILD_NUMBER=$((BUILD_NUMBER + 1))
+          else
+            # Handle cases where no build number is present (set to 1)
+            BUILD_NUMBER=100
+          fi
+          
+          echo "Updated Build Number: $BUILD_NUMBER"
+          
+          
           VERSION_MAJOR=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '.' -f 1)
           VERSION_MINOR=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '.' -f 2)
           VERSION_PATCH=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '+' -f 1 | cut -d '.' -f 3)
