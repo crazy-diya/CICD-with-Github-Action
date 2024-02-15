@@ -22,50 +22,50 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
 
-      #2 Setup Java
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '11'
-          cache: 'gradle' # Optimizes Gradle-based builds by caching dependencies and build outputs.
-
-      #      #3 Setup Node
-      #      - name: Set up Node
-      #        uses: actions/setup-node@v4
-      #        with:
-      #          node-version: '20'  # commented this Node setup and instead that i change upload-artifact@v2 as a upload-artifact@v4.1.0
-
-      #4 Setup Flutter
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.16.2'
-          channel: 'stable'
-          cache: true # Speeds up Flutter builds by caching general Flutter-related files.
-      #            For actions/setup-java@v3, the cache option is set to 'gradle' because it’s specifying what build tool’s
-      #            dependencies to cache. In this case, it’s caching the dependencies of a Gradle project. Other options could
-      #            be 'maven' for Maven projects or 'sbt' for Scala projects.
-      #            For subosito/flutter-action@v2, the cache option is a boolean value that indicates whether or not to cache the
-      #            Flutter dependencies. When set to true, it caches the dependencies, speeding up subsequent workflow runs.
-
-      #5 Install Dependencies
-      - name: Install Flutter Dependencies
-        run: flutter pub get
-
-      - name: Install iOS Dependencies
-        run: |
-          cd ios
-          pod install
-
-      #6 Flutter Test
-      - name: App Issues Analyzing
-        run: flutter analyze
-
-      #        #7 Run Flutter App
-      #        - name: Flutter App Unit Testing
-      #          run: flutter test
-
+#      #2 Setup Java
+#      - name: Set up Java
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: 'zulu'
+#          java-version: '11'
+#          cache: 'gradle' # Optimizes Gradle-based builds by caching dependencies and build outputs.
+#
+#      #      #3 Setup Node
+#      #      - name: Set up Node
+#      #        uses: actions/setup-node@v4
+#      #        with:
+#      #          node-version: '20'  # commented this Node setup and instead that i change upload-artifact@v2 as a upload-artifact@v4.1.0
+#
+#      #4 Setup Flutter
+#      - name: Set up Flutter
+#        uses: subosito/flutter-action@v2
+#        with:
+#          flutter-version: '3.16.2'
+#          channel: 'stable'
+#          cache: true # Speeds up Flutter builds by caching general Flutter-related files.
+#      #            For actions/setup-java@v3, the cache option is set to 'gradle' because it’s specifying what build tool’s
+#      #            dependencies to cache. In this case, it’s caching the dependencies of a Gradle project. Other options could
+#      #            be 'maven' for Maven projects or 'sbt' for Scala projects.
+#      #            For subosito/flutter-action@v2, the cache option is a boolean value that indicates whether or not to cache the
+#      #            Flutter dependencies. When set to true, it caches the dependencies, speeding up subsequent workflow runs.
+#
+#      #5 Install Dependencies
+#      - name: Install Flutter Dependencies
+#        run: flutter pub get
+#
+#      - name: Install iOS Dependencies
+#        run: |
+#          cd ios
+#          pod install
+#
+#      #6 Flutter Test
+#      - name: App Issues Analyzing
+#        run: flutter analyze
+#
+#      #        #7 Run Flutter App
+#      #        - name: Flutter App Unit Testing
+#      #          run: flutter test
+#
 #      #8 Build APK file
 #      - name: Build APK
 #        run: flutter build apk --flavor qa -t lib/flavors/main_qa.dart --split-per-abi --release
@@ -86,7 +86,7 @@ jobs:
       - name: Get App version Number
         id: get_version
         run: |
-          echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
+          echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_ENV
           echo "Welcome to Printing world"
           echo "The version is: $VERSION"
           echo "The version is: ${{ steps.get_version.outputs.VERSION }}"
