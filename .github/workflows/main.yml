@@ -86,7 +86,7 @@ jobs:
       - name: Get App version Number
         id: get_version
         run: |
-          "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
+          echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
           echo "Welcome to Printing world"
           echo "The version is: $VERSION"
           echo "The version is: ${{ steps.get_version.outputs.VERSION }}"
