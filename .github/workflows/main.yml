@@ -22,393 +22,396 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
 
-      #2 Setup Java
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '11'
-          cache: 'gradle' # Optimizes Gradle-based builds by caching dependencies and build outputs.
-
-      #      #3 Setup Node
-      #      - name: Set up Node
-      #        uses: actions/setup-node@v4
-      #        with:
-      #          node-version: '20'  # commented this Node setup and instead that i change upload-artifact@v2 as a upload-artifact@v4.1.0
-
-      #4 Setup Flutter
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.16.2'
-          channel: 'stable'
-          cache: true # Speeds up Flutter builds by caching general Flutter-related files.
-      #            For actions/setup-java@v3, the cache option is set to 'gradle' because it’s specifying what build tool’s
-      #            dependencies to cache. In this case, it’s caching the dependencies of a Gradle project. Other options could
-      #            be 'maven' for Maven projects or 'sbt' for Scala projects.
-      #            For subosito/flutter-action@v2, the cache option is a boolean value that indicates whether or not to cache the
-      #            Flutter dependencies. When set to true, it caches the dependencies, speeding up subsequent workflow runs.
-
-      #5 Install Dependencies
-      - name: Install Flutter Dependencies
-        run: flutter pub get
-
-      - name: Install iOS Dependencies
-        run: |
-          cd ios
-          pod install
-
-      #6 Flutter Test
-      - name: App Issues Analyzing
-        run: flutter analyze
-
-      #        #7 Run Flutter App
-      #        - name: Flutter App Unit Testing
-      #          run: flutter test
-
-      #8 Build APK file
-      - name: Build APK
-        run: flutter build apk --flavor qa -t lib/flavors/main_qa.dart --split-per-abi --release
-
-      #9 Build AAB file
-      - name: Build AppBundle
-        run: flutter build appbundle --flavor qa -t lib/flavors/main_qa.dart --split-debug-info --release
-
-      #10 Build IPA file
-      - name: Build IPA
-        run: flutter build ipa --flavor qa -t lib/flavors/main_qa.dart --release --no-codesign
-      - name: Compress Archives and IPAs
-        run: |
-          cd build
-          tar -czf ios_build_qa.tar.gz ios
-
-      #12 Retrieve the Current App Version from pubspec.yaml file
-      - name: Get App version Number
-        id: get_version
-        run: echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
-      #          run: echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)"
-      #          run: |
-      #            echo ::set-output name=VERSION::$(grep "version:" pubspec.yaml | awk '{print $2}')
-
-      #11 Upload Artifact
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4.1.0
-        with:
-          name: Releases (APK,AAB,IPA) - QA
-          path: |
-            build/app/outputs/flutter-apk/app-armeabi-v7a-qa-release.apk
-            build/app/outputs/bundle/qaRelease/app-qa-release.aab
-            build/ios_build_qa.tar.gz
-      #              README.md
-
-      #13 Create Release with adding app version number to the release repo
-      - name: Create Releases with new Release Number
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-qa-release.apk,build/app/outputs/bundle/qaRelease/app-qa-release.aab,build/ios_build_qa.tar.gz"
-          tag: v${{ steps.get_version.outputs.VERSION }}
-          name: v${{ steps.get_version.outputs.VERSION }}
-          #            tag: v1.0.${{ github.run_number}}
-          #token: ${{ secrets.TOKEN }}
-          draft: false
-          prerelease: false
-          bodyFile: "README.md"
-
-      #14 Upload Artifact to the google Drive
-      - name: Upload Github-Actions Artifacts TO Google Drive
-        uses: Jumbo810/Upload_Github_Artifacts_TO_GDrive@v2.2.2
-        with:
-          target: build/app/outputs/flutter-apk/app-armeabi-v7a-qa-release.apk
-          credentials: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS }}
-          parent_folder_id: 1_CzOZziK5veBGVO-YmtM-lk8W36Z7pog
-          child_folder: v${{ steps.get_version.outputs.VERSION }}/${{ matrix.flavor }}
-
-      #15 Send mail to the QA Team
-      - name: Send E-Mail to QA team with release note
-        if: always()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          secure: true
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: Release for the QA Testing
-          to: ${{ vars.TO_MAIL }}
-          cc: ${{ vars.CC_MAILS }}
-          from: ${{ vars.FROM_NAME }}
-          #            body: Build job of ${{github.repository}} completed successfully!
-          html_body: file://README.md
-          convert_markdown: true # Writing format show in mail same as.
-
-
-  dev_environment:
-    name: Build & Release ( DEV )
-    runs-on: macos-latest
-
-    # If you wish to use the ncipollo/release-action@v1.10.0 action then just add this to your workflow. for "IGNORE THE TOKEN"
-    permissions:
-      contents: write
-
-    steps:
-      #1 Checkout repository
-      - name: Checkout Repository
-        uses: actions/checkout@v4.1.1
-
-      #2 Setup Java
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '11'
-          cache: 'gradle' # Optimizes Gradle-based builds by caching dependencies and build outputs.
-
-      #      #3 Setup Node
-      #      - name: Set up Node
-      #        uses: actions/setup-node@v4
-      #        with:
-      #          node-version: '20'  # commented this Node setup and instead that i change upload-artifact@v2 as a upload-artifact@v4.1.0
-
-      #4 Setup Flutter
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.16.2'
-          channel: 'stable'
-          cache: true # Speeds up Flutter builds by caching general Flutter-related files.
-      #            For actions/setup-java@v3, the cache option is set to 'gradle' because it’s specifying what build tool’s
-      #            dependencies to cache. In this case, it’s caching the dependencies of a Gradle project. Other options could
-      #            be 'maven' for Maven projects or 'sbt' for Scala projects.
-      #            For subosito/flutter-action@v2, the cache option is a boolean value that indicates whether or not to cache the
-      #            Flutter dependencies. When set to true, it caches the dependencies, speeding up subsequent workflow runs.
-
-      #5 Install Dependencies
-      - name: Install Flutter Dependencies
-        run: flutter pub get
-
-      - name: Install iOS Dependencies
-        run: |
-          cd ios
-          pod install
-
-      #6 Flutter Test
-      - name: App Issues Analyzing
-        run: flutter analyze
-
-      #        #7 Run Flutter App
-      #        - name: Flutter App Unit Testing
-      #          run: flutter test
-
-      #8 Build APK file
-      - name: Build APK
-        run: flutter build apk --flavor dev -t lib/flavors/main_dev.dart --split-per-abi --release
-
-      #9 Build AAB file
-      - name: Build AppBundle
-        run: flutter build appbundle --flavor dev -t lib/flavors/main_dev.dart --split-debug-info --release
-
-      #10 Build IPA file
-      - name: Build IPA
-        run: flutter build ipa --flavor dev -t lib/flavors/main_dev.dart --release --no-codesign
-      - name: Compress Archives and IPAs
-        run: |
-          cd build
-          tar -czf ios_build_dev.tar.gz ios
+#      #2 Setup Java
+#      - name: Set up Java
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: 'zulu'
+#          java-version: '11'
+#          cache: 'gradle' # Optimizes Gradle-based builds by caching dependencies and build outputs.
+#
+#      #      #3 Setup Node
+#      #      - name: Set up Node
+#      #        uses: actions/setup-node@v4
+#      #        with:
+#      #          node-version: '20'  # commented this Node setup and instead that i change upload-artifact@v2 as a upload-artifact@v4.1.0
+#
+#      #4 Setup Flutter
+#      - name: Set up Flutter
+#        uses: subosito/flutter-action@v2
+#        with:
+#          flutter-version: '3.16.2'
+#          channel: 'stable'
+#          cache: true # Speeds up Flutter builds by caching general Flutter-related files.
+#      #            For actions/setup-java@v3, the cache option is set to 'gradle' because it’s specifying what build tool’s
+#      #            dependencies to cache. In this case, it’s caching the dependencies of a Gradle project. Other options could
+#      #            be 'maven' for Maven projects or 'sbt' for Scala projects.
+#      #            For subosito/flutter-action@v2, the cache option is a boolean value that indicates whether or not to cache the
+#      #            Flutter dependencies. When set to true, it caches the dependencies, speeding up subsequent workflow runs.
+#
+#      #5 Install Dependencies
+#      - name: Install Flutter Dependencies
+#        run: flutter pub get
+#
+#      - name: Install iOS Dependencies
+#        run: |
+#          cd ios
+#          pod install
+#
+#      #6 Flutter Test
+#      - name: App Issues Analyzing
+#        run: flutter analyze
+#
+#      #        #7 Run Flutter App
+#      #        - name: Flutter App Unit Testing
+#      #          run: flutter test
+#
+#      #8 Build APK file
+#      - name: Build APK
+#        run: flutter build apk --flavor qa -t lib/flavors/main_qa.dart --split-per-abi --release
+#
+#      #9 Build AAB file
+#      - name: Build AppBundle
+#        run: flutter build appbundle --flavor qa -t lib/flavors/main_qa.dart --split-debug-info --release
+#
+#      #10 Build IPA file
+#      - name: Build IPA
+#        run: flutter build ipa --flavor qa -t lib/flavors/main_qa.dart --release --no-codesign
+#      - name: Compress Archives and IPAs
+#        run: |
+#          cd build
+#          tar -czf ios_build_qa.tar.gz ios
 
       #12 Retrieve the Current App Version from pubspec.yaml file
       - name: Get App version Number
         id: get_version
-        run: echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
+        run: |
+          echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
+          echo "Welcome to Printing world"
+
       #          run: echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)"
       #          run: |
       #            echo ::set-output name=VERSION::$(grep "version:" pubspec.yaml | awk '{print $2}')
 
-      #11 Upload Artifact
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4.1.0
-        with:
-          name: Releases (APK,AAB,IPA) - DEV
-          path: |
-            build/app/outputs/flutter-apk/app-armeabi-v7a-dev-release.apk
-            build/app/outputs/bundle/devRelease/app-dev-release.aab
-            build/ios_build_dev.tar.gz
-      #              README.md
+#      #11 Upload Artifact
+#      - name: Upload Artifact
+#        uses: actions/upload-artifact@v4.1.0
+#        with:
+#          name: Releases (APK,AAB,IPA) - QA
+#          path: |
+#            build/app/outputs/flutter-apk/app-armeabi-v7a-qa-release.apk
+#            build/app/outputs/bundle/qaRelease/app-qa-release.aab
+#            build/ios_build_qa.tar.gz
+#      #              README.md
+#
+#      #13 Create Release with adding app version number to the release repo
+#      - name: Create Releases with new Release Number
+#        uses: ncipollo/release-action@v1
+#        with:
+#          artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-qa-release.apk,build/app/outputs/bundle/qaRelease/app-qa-release.aab,build/ios_build_qa.tar.gz"
+#          tag: v${{ steps.get_version.outputs.VERSION }}
+#          name: v${{ steps.get_version.outputs.VERSION }}
+#          #            tag: v1.0.${{ github.run_number}}
+#          #token: ${{ secrets.TOKEN }}
+#          draft: false
+#          prerelease: false
+#          bodyFile: "README.md"
+#
+#      #14 Upload Artifact to the google Drive
+#      - name: Upload Github-Actions Artifacts TO Google Drive
+#        uses: Jumbo810/Upload_Github_Artifacts_TO_GDrive@v2.2.2
+#        with:
+#          target: build/app/outputs/flutter-apk/app-armeabi-v7a-qa-release.apk
+#          credentials: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS }}
+#          parent_folder_id: 1_CzOZziK5veBGVO-YmtM-lk8W36Z7pog
+#          child_folder: v${{ steps.get_version.outputs.VERSION }}/${{ matrix.flavor }}
+#
+#      #15 Send mail to the QA Team
+#      - name: Send E-Mail to QA team with release note
+#        if: always()
+#        uses: dawidd6/action-send-mail@v3
+#        with:
+#          server_address: smtp.gmail.com
+#          server_port: 465
+#          secure: true
+#          username: ${{ secrets.MAIL_USERNAME }}
+#          password: ${{ secrets.MAIL_PASSWORD }}
+#          subject: Release for the QA Testing
+#          to: ${{ vars.TO_MAIL }}
+#          cc: ${{ vars.CC_MAILS }}
+#          from: ${{ vars.FROM_NAME }}
+#          #            body: Build job of ${{github.repository}} completed successfully!
+#          html_body: file://README.md
+#          convert_markdown: true # Writing format show in mail same as.
 
-      #13 Create Release with adding app version number to the release repo
-      - name: Create Releases with new Release Number
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-dev-release.apk,build/app/outputs/bundle/devRelease/app-dev-release.aab,build/ios_build_dev.tar.gz"
-          tag: v${{ steps.get_version.outputs.VERSION }}
-          name: v${{ steps.get_version.outputs.VERSION }}
-          #            tag: v1.0.${{ github.run_number}}
-          #token: ${{ secrets.TOKEN }}
-          draft: false
-          prerelease: false
-          bodyFile: "README.md"
-
-      #14 Upload Artifact to the google Drive
-      - name: Upload Github-Actions Artifacts TO Google Drive
-        uses: Jumbo810/Upload_Github_Artifacts_TO_GDrive@v2.2.2
-        with:
-          target: build/app/outputs/flutter-apk/app-armeabi-v7a-dev-release.apk
-          credentials: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS }}
-          parent_folder_id: 1_CzOZziK5veBGVO-YmtM-lk8W36Z7pog
-          child_folder: v${{ steps.get_version.outputs.VERSION }}/${{ matrix.flavor }}
-
-      #15 Send mail to the QA Team
-      - name: Send E-Mail to QA team with release note
-        if: always()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          secure: true
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: Release for the QA Testing
-          to: ${{ vars.TO_MAIL }}
-          cc: ${{ vars.CC_MAILS }}
-          from: ${{ vars.FROM_NAME }}
-          #            body: Build job of ${{github.repository}} completed successfully!
-          html_body: file://README.md
-          convert_markdown: true # Writing format show in mail same as.
-
-
-  live_environment:
-    name: Build & Release ( LIVE )
-    runs-on: macos-latest
-
-    # If you wish to use the ncipollo/release-action@v1.10.0 action then just add this to your workflow. for "IGNORE THE TOKEN"
-    permissions:
-      contents: write
-
-    steps:
-      #1 Checkout repository
-      - name: Checkout Repository
-        uses: actions/checkout@v4.1.1
-
-      #2 Setup Java
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'zulu'
-          java-version: '11'
-          cache: 'gradle' # Optimizes Gradle-based builds by caching dependencies and build outputs.
-
-      #      #3 Setup Node
-      #      - name: Set up Node
-      #        uses: actions/setup-node@v4
-      #        with:
-      #          node-version: '20'  # commented this Node setup and instead that i change upload-artifact@v2 as a upload-artifact@v4.1.0
-
-      #4 Setup Flutter
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.16.2'
-          channel: 'stable'
-          cache: true # Speeds up Flutter builds by caching general Flutter-related files.
-      #            For actions/setup-java@v3, the cache option is set to 'gradle' because it’s specifying what build tool’s
-      #            dependencies to cache. In this case, it’s caching the dependencies of a Gradle project. Other options could
-      #            be 'maven' for Maven projects or 'sbt' for Scala projects.
-      #            For subosito/flutter-action@v2, the cache option is a boolean value that indicates whether or not to cache the
-      #            Flutter dependencies. When set to true, it caches the dependencies, speeding up subsequent workflow runs.
-
-      #5 Install Dependencies
-      - name: Install Flutter Dependencies
-        run: flutter pub get
-
-      - name: Install iOS Dependencies
-        run: |
-          cd ios
-          pod install
-
-      #6 Flutter Test
-      - name: App Issues Analyzing
-        run: flutter analyze
-
-      #        #7 Run Flutter App
-      #        - name: Flutter App Unit Testing
-      #          run: flutter test
-
-      #8 Build APK file
-      - name: Build APK
-        run: flutter build apk --flavor live -t lib/flavors/main_live.dart --split-per-abi --release
-
-      #9 Build AAB file
-      - name: Build AppBundle
-        run: flutter build appbundle --flavor live -t lib/flavors/main_live.dart --split-debug-info --release
-
-      #10 Build IPA file
-      - name: Build IPA
-        run: flutter build ipa --flavor live -t lib/flavors/main_live.dart --release --no-codesign
-      - name: Compress Archives and IPAs
-        run: |
-          cd build
-          tar -czf ios_build_live.tar.gz ios
-
-      #12 Retrieve the Current App Version from pubspec.yaml file
-      - name: Get App version Number
-        id: get_version
-        run: echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
-      #          run: echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)"
-      #          run: |
-      #            echo ::set-output name=VERSION::$(grep "version:" pubspec.yaml | awk '{print $2}')
-
-      #11 Upload Artifact
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4.1.0
-        with:
-          name: Releases (APK,AAB,IPA) - LIVE
-          path: |
-            build/app/outputs/flutter-apk/app-armeabi-v7a-live-release.apk
-            build/app/outputs/bundle/devRelease/app-live-release.aab
-            build/ios_build_live.tar.gz
-      #              README.md
-
-      #13 Create Release with adding app version number to the release repo
-      - name: Create Releases with new Release Number
-        uses: ncipollo/release-action@v1
-        with:
-          artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-live-release.apk,build/app/outputs/bundle/liveRelease/app-live-release.aab,build/ios_build_live.tar.gz"
-          tag: v${{ steps.get_version.outputs.VERSION }}
-          name: v${{ steps.get_version.outputs.VERSION }}
-          #            tag: v1.0.${{ github.run_number}}
-          #token: ${{ secrets.TOKEN }}
-          draft: false
-          prerelease: false
-          bodyFile: "README.md"
-
-      #14 Upload Artifact to the google Drive
-      - name: Upload Github-Actions Artifacts TO Google Drive
-        uses: Jumbo810/Upload_Github_Artifacts_TO_GDrive@v2.2.2
-        with:
-          target: build/app/outputs/flutter-apk/app-armeabi-v7a-live-release.apk
-          credentials: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS }}
-          parent_folder_id: 1_CzOZziK5veBGVO-YmtM-lk8W36Z7pog
-          child_folder: v${{ steps.get_version.outputs.VERSION }}/${{ matrix.flavor }}
-
-      #15 Send mail to the QA Team
-      - name: Send E-Mail to QA team with release note
-        if: always()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          secure: true
-          username: ${{ secrets.MAIL_USERNAME }}
-          password: ${{ secrets.MAIL_PASSWORD }}
-          subject: Release for the QA Testing
-          to: ${{ vars.TO_MAIL }}
-          cc: ${{ vars.CC_MAILS }}
-          from: ${{ vars.FROM_NAME }}
-          #            body: Build job of ${{github.repository}} completed successfully!
-          html_body: file://README.md
-          convert_markdown: true # Writing format show in mail same as.
-
-
-
+#
+#  dev_environment:
+#    name: Build & Release ( DEV )
+#    runs-on: macos-latest
+#
+#    # If you wish to use the ncipollo/release-action@v1.10.0 action then just add this to your workflow. for "IGNORE THE TOKEN"
+#    permissions:
+#      contents: write
+#
+#    steps:
+#      #1 Checkout repository
+#      - name: Checkout Repository
+#        uses: actions/checkout@v4.1.1
+#
+#      #2 Setup Java
+#      - name: Set up Java
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: 'zulu'
+#          java-version: '11'
+#          cache: 'gradle' # Optimizes Gradle-based builds by caching dependencies and build outputs.
+#
+#      #      #3 Setup Node
+#      #      - name: Set up Node
+#      #        uses: actions/setup-node@v4
+#      #        with:
+#      #          node-version: '20'  # commented this Node setup and instead that i change upload-artifact@v2 as a upload-artifact@v4.1.0
+#
+#      #4 Setup Flutter
+#      - name: Set up Flutter
+#        uses: subosito/flutter-action@v2
+#        with:
+#          flutter-version: '3.16.2'
+#          channel: 'stable'
+#          cache: true # Speeds up Flutter builds by caching general Flutter-related files.
+#      #            For actions/setup-java@v3, the cache option is set to 'gradle' because it’s specifying what build tool’s
+#      #            dependencies to cache. In this case, it’s caching the dependencies of a Gradle project. Other options could
+#      #            be 'maven' for Maven projects or 'sbt' for Scala projects.
+#      #            For subosito/flutter-action@v2, the cache option is a boolean value that indicates whether or not to cache the
+#      #            Flutter dependencies. When set to true, it caches the dependencies, speeding up subsequent workflow runs.
+#
+#      #5 Install Dependencies
+#      - name: Install Flutter Dependencies
+#        run: flutter pub get
+#
+#      - name: Install iOS Dependencies
+#        run: |
+#          cd ios
+#          pod install
+#
+#      #6 Flutter Test
+#      - name: App Issues Analyzing
+#        run: flutter analyze
+#
+#      #        #7 Run Flutter App
+#      #        - name: Flutter App Unit Testing
+#      #          run: flutter test
+#
+#      #8 Build APK file
+#      - name: Build APK
+#        run: flutter build apk --flavor dev -t lib/flavors/main_dev.dart --split-per-abi --release
+#
+#      #9 Build AAB file
+#      - name: Build AppBundle
+#        run: flutter build appbundle --flavor dev -t lib/flavors/main_dev.dart --split-debug-info --release
+#
+#      #10 Build IPA file
+#      - name: Build IPA
+#        run: flutter build ipa --flavor dev -t lib/flavors/main_dev.dart --release --no-codesign
+#      - name: Compress Archives and IPAs
+#        run: |
+#          cd build
+#          tar -czf ios_build_dev.tar.gz ios
+#
+#      #12 Retrieve the Current App Version from pubspec.yaml file
+#      - name: Get App version Number
+#        id: get_version
+#        run: echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
+#      #          run: echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)"
+#      #          run: |
+#      #            echo ::set-output name=VERSION::$(grep "version:" pubspec.yaml | awk '{print $2}')
+#
+#      #11 Upload Artifact
+#      - name: Upload Artifact
+#        uses: actions/upload-artifact@v4.1.0
+#        with:
+#          name: Releases (APK,AAB,IPA) - DEV
+#          path: |
+#            build/app/outputs/flutter-apk/app-armeabi-v7a-dev-release.apk
+#            build/app/outputs/bundle/devRelease/app-dev-release.aab
+#            build/ios_build_dev.tar.gz
+#      #              README.md
+#
+#      #13 Create Release with adding app version number to the release repo
+#      - name: Create Releases with new Release Number
+#        uses: ncipollo/release-action@v1
+#        with:
+#          artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-dev-release.apk,build/app/outputs/bundle/devRelease/app-dev-release.aab,build/ios_build_dev.tar.gz"
+#          tag: v${{ steps.get_version.outputs.VERSION }}
+#          name: v${{ steps.get_version.outputs.VERSION }}
+#          #            tag: v1.0.${{ github.run_number}}
+#          #token: ${{ secrets.TOKEN }}
+#          draft: false
+#          prerelease: false
+#          bodyFile: "README.md"
+#
+#      #14 Upload Artifact to the google Drive
+#      - name: Upload Github-Actions Artifacts TO Google Drive
+#        uses: Jumbo810/Upload_Github_Artifacts_TO_GDrive@v2.2.2
+#        with:
+#          target: build/app/outputs/flutter-apk/app-armeabi-v7a-dev-release.apk
+#          credentials: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS }}
+#          parent_folder_id: 1_CzOZziK5veBGVO-YmtM-lk8W36Z7pog
+#          child_folder: v${{ steps.get_version.outputs.VERSION }}/${{ matrix.flavor }}
+#
+#      #15 Send mail to the QA Team
+#      - name: Send E-Mail to QA team with release note
+#        if: always()
+#        uses: dawidd6/action-send-mail@v3
+#        with:
+#          server_address: smtp.gmail.com
+#          server_port: 465
+#          secure: true
+#          username: ${{ secrets.MAIL_USERNAME }}
+#          password: ${{ secrets.MAIL_PASSWORD }}
+#          subject: Release for the QA Testing
+#          to: ${{ vars.TO_MAIL }}
+#          cc: ${{ vars.CC_MAILS }}
+#          from: ${{ vars.FROM_NAME }}
+#          #            body: Build job of ${{github.repository}} completed successfully!
+#          html_body: file://README.md
+#          convert_markdown: true # Writing format show in mail same as.
+#
+#
+#  live_environment:
+#    name: Build & Release ( LIVE )
+#    runs-on: macos-latest
+#
+#    # If you wish to use the ncipollo/release-action@v1.10.0 action then just add this to your workflow. for "IGNORE THE TOKEN"
+#    permissions:
+#      contents: write
+#
+#    steps:
+#      #1 Checkout repository
+#      - name: Checkout Repository
+#        uses: actions/checkout@v4.1.1
+#
+#      #2 Setup Java
+#      - name: Set up Java
+#        uses: actions/setup-java@v4
+#        with:
+#          distribution: 'zulu'
+#          java-version: '11'
+#          cache: 'gradle' # Optimizes Gradle-based builds by caching dependencies and build outputs.
+#
+#      #      #3 Setup Node
+#      #      - name: Set up Node
+#      #        uses: actions/setup-node@v4
+#      #        with:
+#      #          node-version: '20'  # commented this Node setup and instead that i change upload-artifact@v2 as a upload-artifact@v4.1.0
+#
+#      #4 Setup Flutter
+#      - name: Set up Flutter
+#        uses: subosito/flutter-action@v2
+#        with:
+#          flutter-version: '3.16.2'
+#          channel: 'stable'
+#          cache: true # Speeds up Flutter builds by caching general Flutter-related files.
+#      #            For actions/setup-java@v3, the cache option is set to 'gradle' because it’s specifying what build tool’s
+#      #            dependencies to cache. In this case, it’s caching the dependencies of a Gradle project. Other options could
+#      #            be 'maven' for Maven projects or 'sbt' for Scala projects.
+#      #            For subosito/flutter-action@v2, the cache option is a boolean value that indicates whether or not to cache the
+#      #            Flutter dependencies. When set to true, it caches the dependencies, speeding up subsequent workflow runs.
+#
+#      #5 Install Dependencies
+#      - name: Install Flutter Dependencies
+#        run: flutter pub get
+#
+#      - name: Install iOS Dependencies
+#        run: |
+#          cd ios
+#          pod install
+#
+#      #6 Flutter Test
+#      - name: App Issues Analyzing
+#        run: flutter analyze
+#
+#      #        #7 Run Flutter App
+#      #        - name: Flutter App Unit Testing
+#      #          run: flutter test
+#
+#      #8 Build APK file
+#      - name: Build APK
+#        run: flutter build apk --flavor live -t lib/flavors/main_live.dart --split-per-abi --release
+#
+#      #9 Build AAB file
+#      - name: Build AppBundle
+#        run: flutter build appbundle --flavor live -t lib/flavors/main_live.dart --split-debug-info --release
+#
+#      #10 Build IPA file
+#      - name: Build IPA
+#        run: flutter build ipa --flavor live -t lib/flavors/main_live.dart --release --no-codesign
+#      - name: Compress Archives and IPAs
+#        run: |
+#          cd build
+#          tar -czf ios_build_live.tar.gz ios
+#
+#      #12 Retrieve the Current App Version from pubspec.yaml file
+#      - name: Get App version Number
+#        id: get_version
+#        run: echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
+#      #          run: echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)"
+#      #          run: |
+#      #            echo ::set-output name=VERSION::$(grep "version:" pubspec.yaml | awk '{print $2}')
+#
+#      #11 Upload Artifact
+#      - name: Upload Artifact
+#        uses: actions/upload-artifact@v4.1.0
+#        with:
+#          name: Releases (APK,AAB,IPA) - LIVE
+#          path: |
+#            build/app/outputs/flutter-apk/app-armeabi-v7a-live-release.apk
+#            build/app/outputs/bundle/devRelease/app-live-release.aab
+#            build/ios_build_live.tar.gz
+#      #              README.md
+#
+#      #13 Create Release with adding app version number to the release repo
+#      - name: Create Releases with new Release Number
+#        uses: ncipollo/release-action@v1
+#        with:
+#          artifacts: "build/app/outputs/flutter-apk/app-armeabi-v7a-live-release.apk,build/app/outputs/bundle/liveRelease/app-live-release.aab,build/ios_build_live.tar.gz"
+#          tag: v${{ steps.get_version.outputs.VERSION }}
+#          name: v${{ steps.get_version.outputs.VERSION }}
+#          #            tag: v1.0.${{ github.run_number}}
+#          #token: ${{ secrets.TOKEN }}
+#          draft: false
+#          prerelease: false
+#          bodyFile: "README.md"
+#
+#      #14 Upload Artifact to the google Drive
+#      - name: Upload Github-Actions Artifacts TO Google Drive
+#        uses: Jumbo810/Upload_Github_Artifacts_TO_GDrive@v2.2.2
+#        with:
+#          target: build/app/outputs/flutter-apk/app-armeabi-v7a-live-release.apk
+#          credentials: ${{ secrets.SERVICE_ACCOUNT_CREDENTIALS }}
+#          parent_folder_id: 1_CzOZziK5veBGVO-YmtM-lk8W36Z7pog
+#          child_folder: v${{ steps.get_version.outputs.VERSION }}/${{ matrix.flavor }}
+#
+#      #15 Send mail to the QA Team
+#      - name: Send E-Mail to QA team with release note
+#        if: always()
+#        uses: dawidd6/action-send-mail@v3
+#        with:
+#          server_address: smtp.gmail.com
+#          server_port: 465
+#          secure: true
+#          username: ${{ secrets.MAIL_USERNAME }}
+#          password: ${{ secrets.MAIL_PASSWORD }}
+#          subject: Release for the QA Testing
+#          to: ${{ vars.TO_MAIL }}
+#          cc: ${{ vars.CC_MAILS }}
+#          from: ${{ vars.FROM_NAME }}
+#          #            body: Build job of ${{github.repository}} completed successfully!
+#          html_body: file://README.md
+#          convert_markdown: true # Writing format show in mail same as.
+#
+#
+#
 
 
 
