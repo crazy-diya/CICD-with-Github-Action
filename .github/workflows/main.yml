@@ -88,7 +88,7 @@ jobs:
         run: |
           echo "VERSION=$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" >> $GITHUB_OUTPUT
           echo "Welcome to Printing world"
-          echo "The version is: ${{ steps.get_version.outputs.VERSION }}"
+          echo "The version is: $VERSION"
 
 
       #          run: echo "::set-output name=VERSION::$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)" // `set-output` command is deprecated and will be disabled soon.
