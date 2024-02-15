@@ -94,7 +94,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4.1.0
         with:
-          name: Releases (APK,AAB,IPA)
+          name: Releases (APK,AAB,IPA) - QA
           path: |
             build/app/outputs/flutter-apk/app-armeabi-v7a-qa-release.apk
             build/app/outputs/bundle/qaRelease/app-qa-release.aab
@@ -227,7 +227,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4.1.0
         with:
-          name: Releases (APK,AAB,IPA)
+          name: Releases (APK,AAB,IPA) - DEV
           path: |
             build/app/outputs/flutter-apk/app-armeabi-v7a-dev-release.apk
             build/app/outputs/bundle/devRelease/app-dev-release.aab
@@ -360,7 +360,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v4.1.0
         with:
-          name: Releases (APK,AAB,IPA)
+          name: Releases (APK,AAB,IPA) - LIVE
           path: |
             build/app/outputs/flutter-apk/app-armeabi-v7a-live-release.apk
             build/app/outputs/bundle/devRelease/app-live-release.aab
