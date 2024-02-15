@@ -109,7 +109,7 @@ jobs:
           
           echo "Updated Build Number: $BUILD_NUMBER"
           
-          echo "$VERSION_NUMBER+$$BUILD_NUMBER"
+          echo "$VERSION_NUMBER+$BUILD_NUMBER"
           
           
           VERSION_MAJOR=$(echo "${{ steps.get_version.outputs.VERSION }}" | cut -d '.' -f 1)
