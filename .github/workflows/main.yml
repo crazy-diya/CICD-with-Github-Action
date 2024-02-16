@@ -239,7 +239,7 @@ jobs:
         id: get_version
         run: |
           VERSION_NUMBER=$(echo "$(grep 'version:' pubspec.yaml | cut -d ' ' -f 2)")
-          BUILD_NUMBER=$(echo ${{ VERSION_NUMBER }} | cut -d '+' -f 2)
+          BUILD_NUMBER=$(echo VERSION_NUMBER  | cut -d '+' -f 2)
           echo $VERSION_NUMBER
           echo $BUILD_NUMBER
 
