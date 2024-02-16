@@ -371,7 +371,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
 
-      - name: Send E-Mail to QA team with release note
+      - name: Send E-Mail to QA team with Android release note
         if: always()
         uses: dawidd6/action-send-mail@v3
         with:
@@ -395,7 +395,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
 
-      - name: Send E-Mail to QA team with release note
+      - name: Send E-Mail to QA team with Huawei release note
         if: always()
         uses: dawidd6/action-send-mail@v3
         with:
@@ -404,7 +404,7 @@ jobs:
           secure: true
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
-          subject: ANDROID Release for the QA Testing
+          subject: HUAWEI Release for the QA Testing
           to: ${{ vars.TO_MAIL }}
           cc: ${{ vars.CC_MAILS }}
           from: ${{ vars.FROM_NAME }}
@@ -419,7 +419,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
 
-      - name: Send E-Mail to QA team with release note
+      - name: Send E-Mail to QA team with iOS release note
         if: always()
         uses: dawidd6/action-send-mail@v3
         with:
@@ -428,7 +428,7 @@ jobs:
           secure: true
           username: ${{ secrets.MAIL_USERNAME }}
           password: ${{ secrets.MAIL_PASSWORD }}
-          subject: ANDROID Release for the QA Testing
+          subject: iOS Release for the QA Testing
           to: ${{ vars.TO_MAIL }}
           cc: ${{ vars.CC_MAILS }}
           from: ${{ vars.FROM_NAME }}
