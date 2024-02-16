@@ -364,8 +364,8 @@ jobs:
 
 
   android_release_mail:
-    name: Android Release Mail Send
-    needs: [ dev_environment,live_environment,qa_environment ]
+    name: ANDROID Release Mail Send
+    needs: [ live_environment, qa_environment, dev_environment ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -388,8 +388,8 @@ jobs:
           convert_markdown: true # Writing format show in mail same as.
 
   huawei_release_mail:
-    name: Android Release Mail Send
-    needs: [ dev_environment,live_environment,qa_environment ]
+    name: HUAWEI Release Mail Send
+    needs: [ dev_environment, live_environment, qa_environment ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
@@ -412,8 +412,8 @@ jobs:
           convert_markdown: true # Writing format show in mail same as.
 
   ios_release_mail:
-    name: Android Release Mail Send
-    needs: [ dev_environment,live_environment,qa_environment ]
+    name: iOS Release Mail Send
+    needs: [ dev_environment, live_environment, qa_environment ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
