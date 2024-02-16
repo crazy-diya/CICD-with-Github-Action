@@ -242,6 +242,11 @@ jobs:
           BUILD_NUMBER=$(echo $VERSION_NUMBER  | cut -d '+' -f 2)
           echo $VERSION_NUMBER
           echo $BUILD_NUMBER
+          
+          if [[ $BUILD_NUMBER =~ [0-9]+ ]]; then
+            BUILD_NUMBER=$((BUILD_NUMBER + 1))
+          
+          echo "Updated Build Number: $BUILD_NUMBER"
 
 #      #11 Upload Artifact
 #      - name: Upload Artifact
