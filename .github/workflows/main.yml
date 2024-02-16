@@ -244,7 +244,7 @@ jobs:
           echo $BUILD_NUMBER
           
           if [[ $BUILD_NUMBER =~ [0-9]+ ]]; then
-            BUILD_NUMBER=$((BUILD_NUMBER + 1))
+            BUILD_NUMBER=$(BUILD_NUMBER + 1)
           else
             BUILD_NUMBER = 100
           fi
